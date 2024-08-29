@@ -1,0 +1,14 @@
+{
+  "name": "message-broker-kit",
+  "version": "1.0.0",
+  "description": "A Kafka message broker class for Node.js",
+  "main": "src/KafkaMessageBroker.js",
+  "scripts": {
+    "test": "node test/exampleUsage.js"
+  },
+  "dependencies": {
+    "kafkajs": "^2.0.0" 
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
