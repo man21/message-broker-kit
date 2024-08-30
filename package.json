@@ -9,6 +9,6 @@
   "dependencies": {
     "kafkajs": "^2.0.0" 
   },
-  "author": "Your Name",
+  "author": "Mandeep",
   "license": "MIT"
 }

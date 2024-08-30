@@ -5,6 +5,10 @@ class KafkaMessageBroker {
     this.clientId = config.clientId || "my-app";
     this.groupId = config.groupId || "my-group";
     this.brokers = config.brokers || ["localhost:9092"];
+    this.sessionTimeout = config.sessionTimeout || 10000,
+    this.heartbeatInterval= config.heartbeatInterval ||3000, 
+    this.topics = config.topics || ["UserEvent"];
+
     this.kafka = new Kafka({
       clientId: this.clientId,
       brokers: this.brokers,
@@ -24,8 +28,6 @@ class KafkaMessageBroker {
     const admin = this.kafka.admin();
     const topicExists = await admin.listTopics();
 
-    console.log(topicExists, " topicExists");
-
     for (const t of topicConfigs) {
       if (!topicExists.includes(t.topic)) {
         await admin.createTopics({
@@ -37,7 +39,7 @@ class KafkaMessageBroker {
   }
 
   async connectProducer() {
-    await this.createTopics(["UserEvent"]);
+    await this.createTopics(this.topics);
 
     if (this.producer) {
       return this.producer;
@@ -65,15 +67,21 @@ class KafkaMessageBroker {
           value: JSON.stringify(data.message)
         }
       ],
+      acks: 1 
     });
-    return !result;
+    return result;
   }
 
   async connectConsumer() {
     if (this.consumer) {
       return this.consumer;
     }
-    this.consumer = this.kafka.consumer({ groupId: this.groupId });
+    this.consumer = this.kafka.consumer({ 
+      groupId: this.groupId,
+      sessionTimeout: this.sessionTimeout, // Example value, adjust as needed
+      heartbeatInterval: this.heartbeatInterval, // Example value, adjust as needed
+      autoOffsetReset: 'earliest', // Start reading from the beginning if no offset is found
+     });
     await this.consumer.connect();
     return this.consumer;
   }
@@ -89,17 +97,15 @@ class KafkaMessageBroker {
     await consumer.subscribe({ topic, fromBeginning: true });
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        if (topic !== "UserEvent") {
-          return;
-        }
-
+        // if (topic !== "UserEvent") {
+        //   return;
+        // }
         if (message.key && message.value) {
           const inputMessage = {
             headers: message.headers,
             event: message.key.toString(),
             data: message.value ? JSON.parse(message.value.toString()) : null
           };
-
           await messageHandler(inputMessage);
           await consumer.commitOffsets([
             { topic, partition, offset: (Number(message.offset) + 1).toString() }
