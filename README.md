@@ -1,6 +1,6 @@
 # KafkaMessageBroker
 
-`message-broker-kit` is a simple and flexible Kafka client for managing both producers and consumers. This package provides an easy-to-use API for publishing and subscribing to Kafka topics, including automatic topic creation and offset management.
+`message-broker-kit` is a versatile messaging client for managing both Kafka and RabbitMQ. This package provides an easy-to-use API for publishing and subscribing to Kafka topics and RabbitMQ queues.
 
 ## Installation
 
@@ -132,6 +132,11 @@ Subscribes to a topic and processes incoming messages using the provided handler
 **Returns:**
 - `Promise`: Resolves when the subscription is complete and the consumer starts processing messages.
 
+# Upcoming
+  1. RabbitMQ
+  2. ActiveMQ
+  3. ZeroMQ
+  4. Apache RocketMQ
 
 ## Contributing
 Feel free to open issues or pull requests to contribute to the project.
