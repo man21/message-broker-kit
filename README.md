@@ -8,6 +8,7 @@ To install the package, use npm:
 
 ```bash
 npm install message-broker-kit
+```
 
 ## Usage
 Configuration
