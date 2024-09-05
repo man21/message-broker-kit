@@ -12,7 +12,7 @@ class KafkaMessageBroker {
     this.kafka = new Kafka({
       clientId: this.clientId,
       brokers: this.brokers,
-      // logLevel: logLevel.INFO
+      logLevel: logLevel.ERROR
     });
     this.producer = null;
     this.consumer = null;
